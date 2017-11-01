@@ -3,6 +3,7 @@ package cron
 import (
 	"github.com/shirou/gopsutil/process"
 	"fmt"
+	//"github.com/open-falcon/common/model"
 )
 
 type ProcessInfo struct {
@@ -43,8 +44,9 @@ func Collect() {
 	}
 
 	for i:=0;i<len(cpuInfoList);i++{
-		fmt.Print("pid:",cpuInfoList[i].pid,"cmdline:",cpuInfoList[i].cmdline ,"cpu:",cpuInfoList[i].CPUPercent,"mem:",cpuInfoList[i].MemPercent,"fdn:",cpuInfoList[i].FileDescriptorNum,"thread:",cpuInfoList[i].ThreadNum,"\n")
-	}
+		//fmt.Print("pid:",cpuInfoList[i].pid,"cmdline:",cpuInfoList[i].cmdline ,"cpu:",cpuInfoList[i].CPUPercent,"mem:",cpuInfoList[i].MemPercent,"fdn:",cpuInfoList[i].FileDescriptorNum,"thread:",cpuInfoList[i].ThreadNum,"\n")
+		fmt.Sprintf("pid=%d,cmdline=%s", cpuInfoList[i].pid, cpuInfoList[i].cmdline)
+		}
 
 }
 
@@ -111,6 +113,20 @@ func collectCPU(pids []int32) (CPUInfoList []*ProcessInfo,err error) {
 	return CPUInfoList,nil
 }
 
+/*func convirtProcessInfoToMetrics(procInfo []*ProcessInfo)(metrics []*model.MetricValue, err error){
+	for i:=0;i<len(procInfo);i++{
+		singleMetric := &model.MetricValue{
+			Endpoint:  hostname,
+			Metric:    "lvs.rip.active_conns",
+			Value:     rip.ActiveConns,
+			Timestamp: now,
+			Step:      interval,
+			Type:      "GAUGE",
+			Tags:      tag,
+		}
+	}
+}
+*/
 
 
 
