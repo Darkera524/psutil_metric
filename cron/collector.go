@@ -5,12 +5,15 @@ import (
 	"fmt"
 )
 
-type CPUInfo struct {
+type ProcessInfo struct {
 	pid int32
 	cmdline string
 	//excutablePath string
-	workingDirctory string
+	//workingDirctory string
 	CPUPercent float64
+	MemPercent float32
+	FileDescriptorNum int32
+	ThreadNum int32
 }
 
 type MemInfo struct {
@@ -40,19 +43,19 @@ func Collect() {
 	}
 
 	for i:=0;i<len(cpuInfoList);i++{
-		fmt.Println(cpuInfoList[i].pid,cpuInfoList[i].cmdline ,  cpuInfoList[i].workingDirctory, cpuInfoList[i].CPUPercent)
+		fmt.Print("pid:",cpuInfoList[i].pid,"cmdline:",cpuInfoList[i].cmdline ,"cpu:",cpuInfoList[i].CPUPercent,"mem:",cpuInfoList[i].MemPercent,"fdn:",cpuInfoList[i].FileDescriptorNum,"thread:",cpuInfoList[i].ThreadNum)
 	}
 
 }
 
-func collectCPU(pids []int32) (CPUInfoList []*CPUInfo,err error) {
+func collectCPU(pids []int32) (CPUInfoList []*ProcessInfo,err error) {
 	for _, pid := range pids{
 		proc, err := process.NewProcess(pid)
 		if err != nil {
 			fmt.Println(err.Error())
 			return CPUInfoList,err
 		}
-		var singleInfo *CPUInfo
+		var singleInfo *ProcessInfo
 
 		CPUPercent,err := proc.CPUPercent()
 		if err !=nil {
@@ -69,18 +72,35 @@ func collectCPU(pids []int32) (CPUInfoList []*CPUInfo,err error) {
 			return CPUInfoList,err
 		}*/
 
-		workingDerectory, err := proc.Cwd()
+		/*workingDerectory, err := proc.Cwd()
+		if err !=nil {
+			return CPUInfoList,err
+		}*/
+
+		memPercent, err := proc.MemoryPercent()
 		if err !=nil {
 			return CPUInfoList,err
 		}
 
-		singleInfo = &CPUInfo{
+		fileDescriptiorNum, err := proc.NumFDs()
+		if err !=nil {
+			return CPUInfoList,err
+		}
+
+		threadNum, err := proc.NumThreads()
+		if err !=nil {
+			return CPUInfoList,err
+		}
+
+		singleInfo = &ProcessInfo{
 			pid:pid,
 			cmdline:cmdline,
 			//excutablePath:excutablePath,
-			workingDirctory:workingDerectory,
+			//workingDirctory:workingDerectory,
 			CPUPercent:CPUPercent,
-
+			MemPercent:memPercent,
+			FileDescriptorNum:fileDescriptiorNum,
+			ThreadNum:threadNum,
 		}
 		CPUInfoList = append(CPUInfoList, singleInfo)
 
