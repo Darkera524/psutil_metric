@@ -4,7 +4,7 @@ import (
 	"github.com/shirou/gopsutil/process"
 	"fmt"
 	//"github.com/open-falcon/common/model"
-	"strconv"
+	//"strconv"
 )
 
 type ProcessInfo struct {
