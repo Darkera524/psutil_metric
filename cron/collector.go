@@ -3,10 +3,12 @@ package cron
 import (
 	"github.com/shirou/gopsutil/process"
 	"fmt"
+	"os/exec"
 )
 
 type CPUInfo struct {
 	pid int32
+	cmdline string
 	CPUPercent float64
 }
 
@@ -35,7 +37,7 @@ func Collect() {
 	}
 
 	for i:=0;i<len(cpuInfoList);i++{
-		fmt.Println(cpuInfoList[i].pid,cpuInfoList[i].CPUPercent)
+		fmt.Println(cpuInfoList[i].pid,cpuInfoList[i].cmdline , cpuInfoList[i].CPUPercent)
 	}
 
 }
@@ -51,14 +53,17 @@ func collectCPU(pids []int32) (CPUInfoList []*CPUInfo,err error) {
 
 		CPUPercent,err := proc.CPUPercent()
 		if err !=nil {
-			fmt.Print(proc.Cmdline())
-			fmt.Println(err.Error())
-			continue
-			//return CPUInfoList,err
+			return CPUInfoList,err
+		}
+
+		cmdline, err := proc.Cmdline()
+		if err !=nil {
+			return CPUInfoList,err
 		}
 
 		singleInfo = &CPUInfo{
 			pid:pid,
+			cmdline:cmdline,
 			CPUPercent:CPUPercent,
 
 		}
