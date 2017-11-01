@@ -28,12 +28,14 @@ func Collect() {
 	if err != nil {
 		//error handle
 		fmt.Println("error:1")
+		fmt.Println(err.Error())
 		return
 	}
 	cpuInfoList,err := collectCPU(pids)
 	if err != nil {
 		//error handle
 		fmt.Println("error:2")
+		fmt.Println(err.Error())
 		return
 	}
 
