@@ -46,7 +46,7 @@ func Collect() {
 
 	for i:=0;i<len(cpuInfoList);i++{
 		//fmt.Print("pid:",cpuInfoList[i].pid,"cmdline:",cpuInfoList[i].cmdline ,"cpu:",cpuInfoList[i].CPUPercent,"mem:",cpuInfoList[i].MemPercent,"fdn:",cpuInfoList[i].FileDescriptorNum,"thread:",cpuInfoList[i].ThreadNum,"\n")
-		fmt.Sprintf("pid=%d,cmdline=%s", int(cpuInfoList[i].pid), cpuInfoList[i].cmdline)
+		fmt.Printf("pid=%d,cmdline=%s", cpuInfoList[i].pid, cpuInfoList[i].cmdline)
 	}
 
 }
