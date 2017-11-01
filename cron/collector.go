@@ -3,7 +3,6 @@ package cron
 import (
 	"github.com/shirou/gopsutil/process"
 	"fmt"
-	"os/exec"
 )
 
 type CPUInfo struct {
