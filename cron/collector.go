@@ -35,7 +35,7 @@ func Collect() {
 	}
 
 	for i:=0;i<len(cpuInfoList);i++{
-		fmt.Printf("%s:%d", cpuInfoList[i].pid, cpuInfoList[i].CPUPercent)
+		fmt.Println(cpuInfoList[i].pid,cpuInfoList[i].CPUPercent)
 	}
 
 }
