@@ -8,7 +8,7 @@ import (
 type CPUInfo struct {
 	pid int32
 	cmdline string
-	excutablePath string
+	//excutablePath string
 	workingDirctory string
 	CPUPercent float64
 }
@@ -40,7 +40,7 @@ func Collect() {
 	}
 
 	for i:=0;i<len(cpuInfoList);i++{
-		fmt.Println(cpuInfoList[i].pid,cpuInfoList[i].cmdline , cpuInfoList[i].excutablePath, cpuInfoList[i].workingDirctory, cpuInfoList[i].CPUPercent)
+		fmt.Println(cpuInfoList[i].pid,cpuInfoList[i].cmdline ,  cpuInfoList[i].workingDirctory, cpuInfoList[i].CPUPercent)
 	}
 
 }
@@ -64,10 +64,10 @@ func collectCPU(pids []int32) (CPUInfoList []*CPUInfo,err error) {
 			return CPUInfoList,err
 		}
 
-		excutablePath, err := proc.Exe()
+		/*excutablePath, err := proc.Exe()
 		if err !=nil {
 			return CPUInfoList,err
-		}
+		}*/
 
 		workingDerectory, err := proc.Cwd()
 		if err !=nil {
@@ -77,7 +77,7 @@ func collectCPU(pids []int32) (CPUInfoList []*CPUInfo,err error) {
 		singleInfo = &CPUInfo{
 			pid:pid,
 			cmdline:cmdline,
-			excutablePath:excutablePath,
+			//excutablePath:excutablePath,
 			workingDirctory:workingDerectory,
 			CPUPercent:CPUPercent,
 
