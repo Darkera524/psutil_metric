@@ -5,7 +5,26 @@ import (
 	"fmt"
 	//"github.com/open-falcon/common/model"
 	//"strconv"
+	"psutil_metric/g"
+	"time"
+	"strings"
+	"github.com/open-falcon/common/model"
 )
+
+
+
+
+
+func Collect(){
+
+	var interval int64 = g.Config().Transfer.Interval
+	var ticker = time.NewTicker(time.Duration(interval) * time.Second)
+
+	for {
+		<-ticker.C
+		collectProc()
+	}
+}
 
 type ProcessInfo struct {
 	pid int32
@@ -26,7 +45,7 @@ func Test(){
 	fmt.Println("qweqe")
 }
 
-func Collect() {
+func collectProc() {
 	pids, err := process.Pids()
 
 
@@ -36,7 +55,7 @@ func Collect() {
 		fmt.Println(err.Error())
 		return
 	}
-	cpuInfoList,err := collectCPU(pids)
+	cpuInfoList,err := collect_info(pids)
 	if err != nil {
 		//error handle
 		fmt.Println("error:2")
@@ -44,14 +63,15 @@ func Collect() {
 		return
 	}
 
-	for i:=0;i<len(cpuInfoList);i++{
-		//fmt.Print("pid:",cpuInfoList[i].pid,"cmdline:",cpuInfoList[i].cmdline ,"cpu:",cpuInfoList[i].CPUPercent,"mem:",cpuInfoList[i].MemPercent,"fdn:",cpuInfoList[i].FileDescriptorNum,"thread:",cpuInfoList[i].ThreadNum,"\n")
-		fmt.Printf("pid=%d,cmdline=%s", cpuInfoList[i].pid, cpuInfoList[i].cmdline)
-	}
+	proc_metrics ,_ := convirtProcessInfoToMetrics(cpuInfoList)
+	g.SendMetrics(proc_metrics)
+	/*for i:=0;i<len(cpuInfoList);i++{
+		fmt.Print("pid:",cpuInfoList[i].pid,"cmdline:",cpuInfoList[i].cmdline ,"cpu:",cpuInfoList[i].CPUPercent,"mem:",cpuInfoList[i].MemPercent,"fdn:",cpuInfoList[i].FileDescriptorNum,"thread:",cpuInfoList[i].ThreadNum,"\n")
+	}*/
 
 }
 
-func collectCPU(pids []int32) (CPUInfoList []*ProcessInfo,err error) {
+func collect_info(pids []int32) (CPUInfoList []*ProcessInfo,err error) {
 	for _, pid := range pids{
 		proc, err := process.NewProcess(pid)
 		if err != nil {
@@ -114,21 +134,66 @@ func collectCPU(pids []int32) (CPUInfoList []*ProcessInfo,err error) {
 	return CPUInfoList,nil
 }
 
-/*func convirtProcessInfoToMetrics(procInfo []*ProcessInfo)(metrics []*model.MetricValue, err error){
+func convirtProcessInfoToMetrics(procInfo []*ProcessInfo)(metrics []*model.MetricValue, err error){
+	hostname, _ := g.Hostname()
+	now := time.Now().Unix()
+	var tags string
+	var attachtags = g.Config().AttachTags
+	var interval int64 = g.Config().Transfer.Interval
+	if attachtags != "" {
+		tags = attachtags
+	}
 	for i:=0;i<len(procInfo);i++{
+		cmdline := (strings.Split(procInfo[i].cmdline," "))[0]
+		var tag string
+		if tags != "" {
+			tag = fmt.Sprintf("%s,pid=%d,cmdline=%s", tags, procInfo[i].pid, cmdline)
+		} else {
+			tag = fmt.Sprintf("pid=%d,cmdline=%s", procInfo[i].pid, cmdline)
+		}
 		singleMetric := &model.MetricValue{
 			Endpoint:  hostname,
-			Metric:    "lvs.rip.active_conns",
-			Value:     rip.ActiveConns,
+			Metric:    "proc.cpu.percent",
+			Value:     procInfo[i].CPUPercent,
 			Timestamp: now,
 			Step:      interval,
 			Type:      "GAUGE",
 			Tags:      tag,
 		}
+		metrics = append(metrics, singleMetric)
+
+		singleMetric = &model.MetricValue{
+			Endpoint:  hostname,
+			Metric:    "proc.mem.percent",
+			Value:     procInfo[i].MemPercent,
+			Timestamp: now,
+			Step:      interval,
+			Type:      "GAUGE",
+			Tags:      tag,
+		}
+		metrics = append(metrics, singleMetric)
+
+		singleMetric = &model.MetricValue{
+			Endpoint:  hostname,
+			Metric:    "proc.fd.num",
+			Value:     procInfo[i].FileDescriptorNum,
+			Timestamp: now,
+			Step:      interval,
+			Type:      "GAUGE",
+			Tags:      tag,
+		}
+		metrics = append(metrics, singleMetric)
+
+		singleMetric = &model.MetricValue{
+			Endpoint:  hostname,
+			Metric:    "proc.num.thread",
+			Value:     procInfo[i].ThreadNum,
+			Timestamp: now,
+			Step:      interval,
+			Type:      "GAUGE",
+			Tags:      tag,
+		}
+		metrics = append(metrics, singleMetric)
 	}
+	return metrics,nil
 }
-*/
-
-
-
-
