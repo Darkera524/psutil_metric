@@ -1,11 +1,11 @@
 package main
 
 import (
-	"psutil_metric/cron"
+	"github.com/Darkera524/psutil_metric/cron"
 	"C"
 	"flag"
 	"github.com/golang/glog"
-	"psutil_metric/g"
+	"github.com/Darkera524/psutil_metric/g"
 )
 
 var cfg = flag.String("c", "cfg.json", "configuration file")
