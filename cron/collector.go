@@ -85,7 +85,7 @@ func collect_info(pids []int32) (CPUInfoList []*ProcessInfo,err error) {
 			return CPUInfoList,err
 		}
 
-		if (CPUPercent > 0.1){
+		if CPUPercent > 0.01 {
 			continue
 		}
 
