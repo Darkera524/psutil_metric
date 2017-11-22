@@ -85,6 +85,10 @@ func collect_info(pids []int32) (CPUInfoList []*ProcessInfo,err error) {
 			return CPUInfoList,err
 		}
 
+		if (CPUPercent > 0.1){
+			continue
+		}
+
 		cmdline, err := proc.Cmdline()
 		if err !=nil {
 			return CPUInfoList,err
