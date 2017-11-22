@@ -190,7 +190,7 @@ func convirtProcessInfoToMetrics(procInfo []*ProcessInfo)(metrics []*model.Metri
 
 		singleMetric = &model.MetricValue{
 			Endpoint:  hostname,
-			Metric:    "proc.num.thread",
+			Metric:    "proc.thread.num",
 			Value:     procInfo[i].ThreadNum,
 			Timestamp: now,
 			Step:      interval,
