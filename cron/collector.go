@@ -151,9 +151,9 @@ func convirtProcessInfoToMetrics(procInfo []*ProcessInfo)(metrics []*model.Metri
 		cmdline := (strings.Split(procInfo[i].cmdline," "))[0]
 		var tag string
 		if tags != "" {
-			tag = fmt.Sprintf("%s,pid=%d,proccmdline=%s", tags, procInfo[i].pid, cmdline)
+			tag = fmt.Sprintf("%s,pid=%d,cmdline=%s", tags, procInfo[i].pid, cmdline)
 		} else {
-			tag = fmt.Sprintf("pid=%d,proccmdline=%s", procInfo[i].pid, cmdline)
+			tag = fmt.Sprintf("pid=%d,cmdline=%s", procInfo[i].pid, cmdline)
 		}
 		singleMetric := &model.MetricValue{
 			Endpoint:  hostname,
