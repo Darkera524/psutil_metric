@@ -148,7 +148,8 @@ func convirtProcessInfoToMetrics(procInfo []*ProcessInfo)(metrics []*model.Metri
 		tags = attachtags
 	}
 	for i:=0;i<len(procInfo);i++{
-		cmdline := (strings.Split(procInfo[i].cmdline," "))[0]
+		cmdline := procInfo[i].cmdline
+			//(strings.Split(procInfo[i].cmdline," "))[0]
 		var tag string
 		if tags != "" {
 			tag = fmt.Sprintf("%s,pid=%d,cmdline=%s", tags, procInfo[i].pid, cmdline)
