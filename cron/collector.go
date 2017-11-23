@@ -7,7 +7,6 @@ import (
 	//"strconv"
 	"github.com/Darkera524/psutil_metric/g"
 	"time"
-	"strings"
 	"github.com/open-falcon/common/model"
 )
 
