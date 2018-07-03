@@ -28,6 +28,7 @@ type GlobalConfig struct {
 	AttachTags string          `json:"attachtags"`
 	Http       *HttpConfig     `json:"http"`
 	Transfer   *TransferConfig `json:"transfer"`
+	Pids	[]int32	`json:"pids"`
 }
 
 var (

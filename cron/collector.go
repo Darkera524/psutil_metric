@@ -46,15 +46,9 @@ func Test(){
 }
 
 func collectProc() {
-	pids, err := process.Pids()
+	//pids, err := process.Pids()
+	pids := g.Config().Pids
 
-
-	if err != nil {
-		//error handle
-		fmt.Println("error:1")
-		fmt.Println(err.Error())
-		return
-	}
 	cpuInfoList,err := collect_info(pids)
 	if err != nil {
 		//error handle
